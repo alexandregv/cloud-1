@@ -1,0 +1,7 @@
+all:
+  hosts:
+    free-scaleway-instance:
+      ansible_host: 212.47.253.216
+      ansible_connection: ssh
+      ansible_user: root
+      ansible_python_interpreter: /usr/bin/python3
