@@ -1,0 +1,12 @@
+- name: Test connection
+  hosts: all
+  tasks:
+    - name: Ping
+      ping:
+    - name: Get public IP
+      uri:
+        url: http://ipinfo.io/ip
+        return_content: yes
+      register: ip_response
+    - name: Show public IP
+      debug: var=ip_response.content
