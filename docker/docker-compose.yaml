@@ -1,0 +1,48 @@
+version: '3'
+
+
+x-service-base: &service-base
+  restart: unless-stopped
+  networks: []
+  volumes: []
+  labels:
+    traefik.enable: false
+  logging:
+    driver: 'json-file'
+    options:
+      max-size: 10m
+      max-file: '3'
+
+x-bind-mount-base: &bind-mount-base
+  driver: local
+  driver_opts: &driver_opts
+    type: none
+    o: bind
+
+
+services:
+  database:
+    <<: *service-base
+    image: mariadb:10.5.10
+    networks:
+      - database
+    volumes:
+      - database:/var/lib/mysql:rw
+    environment:
+      MARIADB_DATABASE: ${DB_NAME:-wordpress}
+      MARIADB_USER: ${DB_USER:-wordpress}
+      MARIADB_PASSWORD: ${DB_PASS:-wordpress}
+      MARIADB_RANDOM_ROOT_PASSWORD: ${DB_RANDOM_ROOT_PASS:-yes}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS:-}
+      MARIADB_ROOT_HOST: ${DB_ROOT_HOST:-localhost}
+
+
+networks:
+  proxy:
+    name: "traefik"
+
+  database:
+
+
+volumes:
+  database:
