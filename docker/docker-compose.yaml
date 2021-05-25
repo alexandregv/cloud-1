@@ -85,11 +85,11 @@ services:
       <<: *labels-traefik-base
       # HTTP
       traefik.http.routers.api.entrypoints: "http"
-      traefik.http.routers.api.rule: "Host(`proxy.cloud-one.alexandregv.fr`)"
+      traefik.http.routers.api.rule: "Host(`traefik.cloud-one.alexandregv.fr`)"
       traefik.http.middlewares.redirect-https.redirectscheme.scheme: "https"
       traefik.http.routers.api.middlewares: "redirect-https"
       # HTTPS
-      traefik.http.routers.api-secure.rule: "Host(`proxy.cloud-one.alexandregv.fr`)"
+      traefik.http.routers.api-secure.rule: "Host(`traefik.cloud-one.alexandregv.fr`)"
       traefik.http.routers.api-secure.entryPoints: "https"
       traefik.http.routers.api-secure.service: "api@internal"
       traefik.http.routers.api-secure.tls: "true"
