@@ -94,14 +94,13 @@ services:
       MYSQL_USER: ${DB_USER:-wordpress}
       MYSQL_PASSWORD: ${DB_PASS:-wordpress}
       PMA_HOST: ${DB_HOST:-database}
-      PMA_ABSOLUTE_URI: http://db.localhost/
-      #PMA_ARBITRARY: 1
+      PMA_ABSOLUTE_URI: "http://${PMA_DOMAIN:-db.localhost}/"
     labels:
       <<: *labels-traefik-base
       traefik.http.services.database-ui.loadbalancer.server.port: "80"
       # HTTP
       traefik.http.routers.database-ui.entrypoints: "http"
-      traefik.http.routers.database-ui.rule: "Host(`db.localhost`)"
+      traefik.http.routers.database-ui.rule: "Host(`${PMA_DOMAIN:-db.localhost}`)"
 
 networks:
   proxy:
