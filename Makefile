@@ -4,8 +4,8 @@ export
 
 
 # Variables
-NAME=cloud-one
-DC=docker-compose -f docker/docker-compose.yaml -p ${NAME}
+COMPOSE_PROJECT_NAME=cloud-one
+DC=docker-compose -f docker/docker-compose.yaml -p ${COMPOSE_PROJECT_NAME}
 
 
 # General rules
@@ -95,7 +95,7 @@ database.rm:
 
 database.rmv:
 	${DC} rm -f -v database
-	docker volume rm ${NAME}_database
+	docker volume rm ${COMPOSE_PROJECT_NAME}_database
 
 database.run: database.upd database.logsf
 
@@ -149,7 +149,7 @@ wordpress.rm:
 
 wordpress.rmv:
 	${DC} rm -f -v wordpress
-	docker volume rm ${NAME}_wordpress
+	docker volume rm ${COMPOSE_PROJECT_NAME}_wordpress
 
 wordpress.run: wordpress.upd wordpress.logsf
 
@@ -158,13 +158,57 @@ wordpress.down: wordpress.stop wordpress.rm
 wordpress.downv: wordpress.stop wordpress.rmv
 
 wordpress.shell:
-	${DC} exec wordpress ash
+	${DC} exec wordpress bash
 
 wordpress.shell.root:
-	${DC} exec --user 0 wordpress ash
+	${DC} exec --user 0 wordpress bash
+
+# proxy
+proxy.build:
+	${DC} build proxy
+
+proxy.logs:
+	${DC} logs proxy
+
+proxy.logsf:
+	${DC} logs -f proxy
+
+proxy.up:
+	${DC} up proxy
+
+proxy.upd:
+	${DC} up -d proxy
+
+proxy.start:
+	${DC} start proxy
+
+proxy.stop:
+	${DC} stop proxy
+
+proxy.kill:
+	${DC} kill proxy
+
+proxy.rm:
+	${DC} rm -f proxy
+
+proxy.rmv:
+	${DC} rm -f -v proxy
+	docker volume rm ${COMPOSE_PROJECT_NAME}_proxy
+
+proxy.run: proxy.upd proxy.logsf
+
+proxy.down: proxy.stop proxy.rm
+
+proxy.downv: proxy.stop proxy.rmv
+
+proxy.shell:
+	${DC} exec proxy ash
+
+proxy.shell.root:
+	${DC} exec --user 0 proxy ash
 
 
 # PHONY
 genphony:
 	echo .PHONY: $$(grep -E '^[A-Za-z\.]+:[A-Za-z\. ]*$$' Makefile | cut -d: -f1 | grep -vi phony) >> Makefile
-.PHONY: all deps test deploy clean fclean re build up upd ps logs logsf start stop down downv run database.build database.logs database.logsf database.up database.upd database.start database.stop database.kill database.rm database.rmv database.run database.down database.downv database.shell database.shell.root database.client database.client.root wordpress.build wordpress.logs wordpress.logsf wordpress.up wordpress.upd wordpress.start wordpress.stop wordpress.kill wordpress.rm wordpress.rmv wordpress.run wordpress.down wordpress.downv wordpress.shell wordpress.shell.root
+.PHONY: all deps test deploy clean fclean re build up upd ps logs logsf start stop down downv run database.build database.logs database.logsf database.up database.upd database.start database.stop database.kill database.rm database.rmv database.run database.down database.downv database.shell database.shell.root database.client database.client.root wordpress.build wordpress.logs wordpress.logsf wordpress.up wordpress.upd wordpress.start wordpress.stop wordpress.kill wordpress.rm wordpress.rmv wordpress.run wordpress.down wordpress.downv wordpress.shell wordpress.shell.root proxy.build proxy.logs proxy.logsf proxy.up proxy.upd proxy.start proxy.stop proxy.kill proxy.rm proxy.rmv proxy.run proxy.down proxy.downv proxy.shell proxy.shell.root

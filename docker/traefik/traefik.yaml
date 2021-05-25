@@ -1,0 +1,19 @@
+# Docker provider configuration 
+providers:
+  docker:
+    defaultRule: "Host(`{{ trimPrefix `/` .Name }}.docker.localhost`)"
+
+# API and Dashboard configuration
+api:
+  dashboard: true
+  insecure: true
+
+# Healhcheck
+ping: {}
+
+# Web Entrypoints
+entryPoints:
+  http:
+    address: ":80"
+  https:
+    address: ":443"
