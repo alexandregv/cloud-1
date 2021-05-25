@@ -193,7 +193,6 @@ proxy.rm:
 
 proxy.rmv:
 	${DC} rm -f -v proxy
-	docker volume rm ${COMPOSE_PROJECT_NAME}_proxy
 
 proxy.run: proxy.upd proxy.logsf
 
@@ -206,6 +205,49 @@ proxy.shell:
 
 proxy.shell.root:
 	${DC} exec --user 0 proxy ash
+
+# database-ui
+database-ui.build:
+	${DC} build database-ui
+
+database-ui.logs:
+	${DC} logs database-ui
+
+database-ui.logsf:
+	${DC} logs -f database-ui
+
+database-ui.up:
+	${DC} up database-ui
+
+database-ui.upd:
+	${DC} up -d database-ui
+
+database-ui.start:
+	${DC} start database-ui
+
+database-ui.stop:
+	${DC} stop database-ui
+
+database-ui.kill:
+	${DC} kill database-ui
+
+database-ui.rm:
+	${DC} rm -f database-ui
+
+database-ui.rmv:
+	${DC} rm -f -v database-ui
+
+database-ui.run: database-ui.upd database-ui.logsf
+
+database-ui.down: database-ui.stop database-ui.rm
+
+database-ui.downv: database-ui.stop database-ui.rmv
+
+database-ui.shell:
+	${DC} exec database-ui bash
+
+database-ui.shell.root:
+	${DC} exec --user 0 database-ui bash
 
 
 # PHONY
