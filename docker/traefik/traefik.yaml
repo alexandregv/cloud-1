@@ -17,3 +17,11 @@ entryPoints:
     address: ":80"
   https:
     address: ":443"
+
+certificatesResolvers:
+  le:
+    acme:
+      email: aguiot--@student.42.fr
+      storage: acme.json
+      httpChallenge:
+        entryPoint: http
