@@ -37,3 +37,19 @@
         url : https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
         dest: /usr/local/bin/docker-compose
         mode: 'u+x,g+x'
+
+
+- name: Copy project files
+  hosts: all
+  gather_facts: false
+  tags:
+    - files
+  tasks:
+    - name: Install dependencies
+      remote_user: ubuntu
+      copy:
+        src: ../../docker/
+        dest: /home/ubuntu/site
+        owner: ubuntu
+        group: ubuntu
+        mode: u=rw,g=r,o=
