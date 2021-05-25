@@ -1,0 +1,29 @@
+- name: Copy project files
+  hosts: all
+  gather_facts: false
+  tags:
+    - copy
+  tasks:
+    - name: Copy all files
+      remote_user: ubuntu
+      copy:
+        src: ../../docker/
+        dest: /home/ubuntu/site
+        owner: ubuntu
+        group: ubuntu
+        mode: u=rw,g=r,o=
+
+
+- name: Start services
+  hosts: all
+  gather_facts: false
+  tags:
+    - start
+  tasks:
+    - name: up
+      community.docker.docker_compose:
+        project_src: /home/ubuntu/site/
+        project_name: cloud-one
+      register: output
+
+    - debug: var=output
