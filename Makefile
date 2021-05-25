@@ -119,8 +119,52 @@ database.client.root:
 		${DC} exec database mariadb -uroot -p; \
 	fi
 
+# wordpress
+wordpress.build:
+	${DC} build wordpress
+
+wordpress.logs:
+	${DC} logs wordpress
+
+wordpress.logsf:
+	${DC} logs -f wordpress
+
+wordpress.up:
+	${DC} up wordpress
+
+wordpress.upd:
+	${DC} up -d wordpress
+
+wordpress.start:
+	${DC} start wordpress
+
+wordpress.stop:
+	${DC} stop wordpress
+
+wordpress.kill:
+	${DC} kill wordpress
+
+wordpress.rm:
+	${DC} rm -f wordpress
+
+wordpress.rmv:
+	${DC} rm -f -v wordpress
+	docker volume rm ${NAME}_wordpress
+
+wordpress.run: wordpress.upd wordpress.logsf
+
+wordpress.down: wordpress.stop wordpress.rm
+
+wordpress.downv: wordpress.stop wordpress.rmv
+
+wordpress.shell:
+	${DC} exec wordpress ash
+
+wordpress.shell.root:
+	${DC} exec --user 0 wordpress ash
+
 
 # PHONY
 genphony:
 	echo .PHONY: $$(grep -E '^[A-Za-z\.]+:[A-Za-z\. ]*$$' Makefile | cut -d: -f1 | grep -vi phony) >> Makefile
-.PHONY: all deps test deploy clean fclean re build up upd ps logs logsf start stop down downv run database.build database.logs database.logsf database.up database.upd database.start database.stop database.kill database.rm database.rmv database.run database.down database.downv database.shell database.shell.root database.client database.client.root
+.PHONY: all deps test deploy clean fclean re build up upd ps logs logsf start stop down downv run database.build database.logs database.logsf database.up database.upd database.start database.stop database.kill database.rm database.rmv database.run database.down database.downv database.shell database.shell.root database.client database.client.root wordpress.build wordpress.logs wordpress.logsf wordpress.up wordpress.upd wordpress.start wordpress.stop wordpress.kill wordpress.rm wordpress.rmv wordpress.run wordpress.down wordpress.downv wordpress.shell wordpress.shell.root

@@ -36,6 +36,24 @@ services:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS:-}
       MARIADB_ROOT_HOST: ${DB_ROOT_HOST:-localhost}
 
+  wordpress:
+    <<: *service-base
+    image: wordpress:5.7.2-fpm-alpine
+    depends_on:
+      - database
+    networks:
+      - database
+      - proxy
+    volumes:
+      - wordpress:/var/www/wordpress:rw
+    labels:
+      <<: *labels-traefik-base
+    environment:
+      WORDPRESS_DB_HOST: ${DB_HOST:-database}
+      WORDPRESS_DB_NAME: ${DB_NAME:-wordpress}
+      WORDPRESS_DB_USER: ${DB_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${DB_PASS:-wordpress}
+
 
 networks:
   proxy:
@@ -46,3 +64,5 @@ networks:
 
 volumes:
   database:
+
+  wordpress:
