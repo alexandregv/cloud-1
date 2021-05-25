@@ -29,6 +29,9 @@ re: fclean all
 test:
 	ansible-playbook -i ansible/inventory.yml ansible/playbooks/test.yml
 
+install: 
+	ansible-playbook -i ansible/inventory.yml ansible/playbooks/docker.yml --tags "install"
+
 deploy:
 	@echo ok
 
