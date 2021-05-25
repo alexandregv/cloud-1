@@ -13,7 +13,7 @@ all: test deploy
 
 deps:
 	ansible --version
-	ansible-galaxy collection install community.docker
+	ansible-galaxy collection install -r ansible/requirements.yml
 
 clean: down
 
