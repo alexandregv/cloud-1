@@ -15,12 +15,6 @@ deps:
 	ansible --version
 	ansible-galaxy collection install community.docker
 
-test:
-	ansible-playbook -i inventory.yml playbooks/test.yml
-
-deploy:
-	@echo ok
-
 clean: down
 
 fclean: downv
@@ -29,6 +23,14 @@ fclean: downv
 	fi
 
 re: fclean all
+
+
+# Ansible rules
+test:
+	ansible-playbook -i ansible/inventory.yml ansible/playbooks/test.yml
+
+deploy:
+	@echo ok
 
 
 # Global docker-compose rules
