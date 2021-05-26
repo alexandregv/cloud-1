@@ -19,11 +19,7 @@ clean: down
 fclean: downv
 	@echo "Deleting $${WP_VOLUME_PATH}..."
 	sudo rm -rf "$${WP_VOLUME_PATH}"
-	docker image rm \
-		"$${COMPOSE_PROJECT_NAME}_mariadb" \
-		"$${COMPOSE_PROJECT_NAME}_wordpress" \
-		"$${COMPOSE_PROJECT_NAME}_nginx" \
-		"$${COMPOSE_PROJECT_NAME}_phpmyadmin" 
+	docker image rm mariadb wordpress nginx phpmyadmin
 
 re: fclean all
 
