@@ -1,6 +1,5 @@
-.env
-.env.dev
-.env.prod
+.env*
+!.env.sample
 *.pem
 *.crt
 *.key

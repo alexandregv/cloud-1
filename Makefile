@@ -1,11 +1,11 @@
 # Export environment variables from .env file
-include docker/.env
+include docker/.env.local
 export
 
 
 # Variables
 COMPOSE_PROJECT_NAME=cloud-one
-DC=docker-compose -f docker/docker-compose.yaml -p ${COMPOSE_PROJECT_NAME}
+DC=docker-compose -f docker/docker-compose.yaml -p ${COMPOSE_PROJECT_NAME} --env-file docker/.env.local
 
 
 # General rules
