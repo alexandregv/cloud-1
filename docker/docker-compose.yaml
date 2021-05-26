@@ -55,7 +55,7 @@ services:
     ports:
       - '443:443'
     volumes:
-      - ssl:/etc/nginx/ssl/:ro
+      - ../ssl/:/etc/nginx/ssl/:ro
       - wordpress-data:/var/www/wordpress:ro
       - ./services/nginx/conf.tmpl.d/:/etc/nginx/conf.tmpl.d/:ro
     environment:
@@ -97,9 +97,3 @@ volumes:
     driver_opts:
       <<: *driver_opts
       device: "/home/$USER/data/wordpress"
-
-  ssl:
-    <<: *bind-mount-base
-    driver_opts:
-      <<: *driver_opts
-      device: "/home/$USER/data/ssl"
