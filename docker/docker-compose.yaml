@@ -92,4 +92,4 @@ volumes:
    <<: *bind-mount-base
    driver_opts:
      <<: *driver_opts
-     device: "/home/ubuntu/cloud-one/volumes/wordpress/"
+     device: ${WP_VOLUME_PATH}
