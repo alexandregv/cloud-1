@@ -53,6 +53,7 @@ services:
     networks:
       - nginx
     ports:
+      - '80:80'
       - '443:443'
     volumes:
       - ./volumes/ssl/:/etc/nginx/ssl/:ro
