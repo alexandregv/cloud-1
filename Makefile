@@ -4,8 +4,7 @@ export
 
 
 # Variables
-COMPOSE_PROJECT_NAME=cloud-one
-DC=docker-compose -f docker/docker-compose.yaml -p ${COMPOSE_PROJECT_NAME} --env-file docker/.env.local
+DC=docker-compose -f docker/docker-compose.yaml -p "$${COMPOSE_PROJECT_NAME}" --env-file docker/.env.local
 
 
 # General rules
@@ -18,11 +17,13 @@ deps:
 clean: down
 
 fclean: downv
-	@echo "Deleting $$WP_VOLUME_PATH..."
-	sudo rm -rf $$WP_VOLUME_PATH
-	if [ -n "$$(${DC} images -q)" ]; then \
-		docker image rm $$(${DC} images -q); \
-	fi
+	@echo "Deleting $${WP_VOLUME_PATH}..."
+	sudo rm -rf "$${WP_VOLUME_PATH}"
+	docker image rm \
+		"$${COMPOSE_PROJECT_NAME}_mariadb" \
+		"$${COMPOSE_PROJECT_NAME}_wordpress" \
+		"$${COMPOSE_PROJECT_NAME}_nginx" \
+		"$${COMPOSE_PROJECT_NAME}_phpmyadmin" 
 
 re: fclean all
 
@@ -156,7 +157,7 @@ wordpress.rm:
 
 wordpress.rmv:
 	${DC} rm -f -v wordpress
-	docker volume rm ${COMPOSE_PROJECT_NAME}_wordpress
+	docker volume rm "$${COMPOSE_PROJECT_NAME}_wordpress" || true
 
 wordpress.run: wordpress.upd wordpress.logsf
 
