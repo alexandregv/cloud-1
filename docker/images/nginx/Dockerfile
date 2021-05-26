@@ -9,7 +9,7 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 # See https://wiki.alpinelinux.org/wiki/Nginx#Installation
-RUN apk add nginx=1.18.0-r1 openssl=1.1.1k-r0
+RUN apk add nginx openssl
 RUN adduser -D -g 'www' www && \
 	mkdir -p /var/www /var/run/nginx /etc/nginx/ssl && \
 	chown -R www:www /var/lib/nginx && \
