@@ -3,10 +3,6 @@
 # Wait for database
 dockerize -wait tcp://"$DB_HOST":3306 -timeout 30s
 
-if [ -z "$(ls -A .)" ]; then
-	cp -R /tmp/wordpress-template/* /var/www/wordpress/
-fi
-
 if wp-cli core is-installed; then
 	echo "WordPress is already installed, starting..."
 else

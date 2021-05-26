@@ -23,14 +23,14 @@ RUN adduser -D -g 'wordpress' wordpress && \
 USER wordpress
 
 # wordpress download
-RUN wp-cli core download --version=5.7.2 --path=/tmp/wordpress-template --locale=en_US --color
+RUN wp-cli core download --version=5.7.2 --path=/var/www/wordpress --locale=en_US --color
 
 # copy and test php-fpm conf
 COPY www.conf /etc/php7/php-fpm.d/www.conf
 RUN php-fpm7 --test
 
 # wordpress config (fetches env vars)
-COPY wp-config.php /tmp/wordpress-template/wp-config.php 
+COPY wp-config.php /var/www/wordpress/wp-config.php 
 
 WORKDIR /var/www/wordpress
 

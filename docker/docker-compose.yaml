@@ -56,7 +56,7 @@ services:
       - '443:443'
     volumes:
       - ./volumes/ssl/:/etc/nginx/ssl/:ro
-      - ./volumes/wordpress/:/var/www/wordpress:ro
+      - wordpress:/var/www/wordpress:ro
       - ./services/nginx/conf.tmpl.d/:/etc/nginx/conf.tmpl.d/:ro
     environment:
       DOMAIN_NAME: ${DOMAIN_NAME:-login.42.fr}
@@ -73,7 +73,7 @@ services:
       - mariadb
       - nginx
     volumes:
-      - ./volumes/wordpress/:/var/www/wordpress:rw
+      - wordpress:/var/www/wordpress:rw
     environment:
       <<: *env-DB
       <<: *env-WP
@@ -88,8 +88,8 @@ networks:
 volumes:
   mariadb:
 
-  wordpress-data:
+  wordpress:
    <<: *bind-mount-base
    driver_opts:
      <<: *driver_opts
-     device: "/home/ubuntu/cloud-one/volumes/wordpress"
+     device: "/home/ubuntu/cloud-one/volumes/wordpress/"
