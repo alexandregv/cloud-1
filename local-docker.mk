@@ -23,6 +23,9 @@ re: fclean all
 
 
 # Global docker-compose rules
+config:
+	${DC} config
+
 build:
 	${DC} build
 
