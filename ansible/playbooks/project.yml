@@ -73,20 +73,21 @@
         var: compose_output
 
 
-- name: Scale services ({{ scale }})
+- name: "Scale services ({{ _scale }})"
   hosts: all
   gather_facts: false
   tags:
     - never
     - scale
-    - wordpress
+  vars:
+    _scale: "{{ scale | default('wordpress=1,phpmyadmin=1,mariadb=1,nginx=1') }}"
   tasks:
     - name: scale
       community.docker.docker_compose:
         project_src: /home/ubuntu/cloud-one/
         project_name: cloud-one
         state: present
-        scale: "{{ scale }}"
+        scale: "{{ _scale }}"
       register: compose_output
 
     - debug:
