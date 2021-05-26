@@ -15,13 +15,11 @@ deps:
 	ansible --version
 	ansible-galaxy collection install -r ansible/requirements.yml
 
-data:
-	mkdir -p "/home/$$USER/data/"
-
 clean: down
 
 fclean: downv
-	sudo rm -rf /home/$$USER/data/mariadb /home/$$USER/data/wordpress /home/$$USER/data/ssl
+	@echo "Deleting $$WP_VOLUME_PATH..."
+	sudo rm -rf $$WP_VOLUME_PATH
 	if [ -n "$$(${DC} images -q)" ]; then \
 		docker image rm $$(${DC} images -q); \
 	fi

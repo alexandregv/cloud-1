@@ -56,11 +56,13 @@ services:
       - '443:443'
     volumes:
       - ./volumes/ssl/:/etc/nginx/ssl/:ro
-      - wordpress:/var/www/wordpress:ro
       - ./services/nginx/conf.tmpl.d/:/etc/nginx/conf.tmpl.d/:ro
+      - wordpress:/var/www/wordpress:ro
+      - phpmyadmin:/var/www/phpmyadmin:ro
     environment:
       DOMAIN_NAME: ${DOMAIN_NAME:-login.42.fr}
       WP_HOST: ${WP_HOST:-wordpress}
+      PMA_HOST: ${PMA_HOST:-phpmyadmin}
 
   wordpress:
     <<: *service-base
@@ -78,6 +80,22 @@ services:
       <<: *env-DB
       <<: *env-WP
 
+  phpmyadmin:
+    <<: *service-base
+    build:
+      context: images/phpmyadmin
+    image: phpmyadmin
+    depends_on:
+      - mariadb
+    networks:
+      - mariadb
+      - nginx
+    volumes:
+      - phpmyadmin:/var/www/phpmyadmin:rw
+    environment:
+      DB_HOST: ${DB_HOST:-mariadb}
+      PMA_BLOWFISH_SECRET: ${PMA_BLOWFISH_SECRET:-}
+
 
 networks:
   nginx:
@@ -87,6 +105,8 @@ networks:
 
 volumes:
   mariadb:
+
+  phpmyadmin:
 
   wordpress:
    <<: *bind-mount-base
