@@ -51,6 +51,12 @@ up:
 down:
 	ansible-playbook -i ansible/inventory.yml ansible/playbooks/project.yml --tags down
 
+scale:
+	ansible-playbook -i ansible/inventory.yml ansible/playbooks/project.yml --tags scale --extra-vars "scale=${SCALE}"
+
+scale-reset:
+	ansible-playbook -i ansible/inventory.yml ansible/playbooks/project.yml --tags scale --extra-vars "scale='wordpress=1,phpmyadmin=1,mariadb=1,nginx=1'"
+
 
 # PHONY
 genphony:

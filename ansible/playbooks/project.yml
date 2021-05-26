@@ -73,3 +73,23 @@
         var: compose_output
 
 
+- name: Scale services ({{ scale }})
+  hosts: all
+  gather_facts: false
+  tags:
+    - never
+    - scale
+    - wordpress
+  tasks:
+    - name: scale
+      community.docker.docker_compose:
+        project_src: /home/ubuntu/cloud-one/
+        project_name: cloud-one
+        state: present
+        scale: "{{ scale }}"
+      register: compose_output
+
+    - debug:
+        var: compose_output
+
+

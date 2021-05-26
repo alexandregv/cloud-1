@@ -95,5 +95,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );
 }
 
+// Show the instance your are currently on, to showcase scaling
+print_r(gethostname());
+
 /** Sets up WordPress vars and included files. */
 require_once ABSPATH . 'wp-settings.php';
