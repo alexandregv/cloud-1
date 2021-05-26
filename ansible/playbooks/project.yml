@@ -34,19 +34,20 @@
         var: compose_output
 
 
-- name: Start services
+- name: (Re)Start services
   hosts: all
   gather_facts: false
   tags:
     - never
     - start
+    - restart
   tasks:
     - name: start
       community.docker.docker_compose:
         project_src: /home/ubuntu/cloud-one/
         project_name: cloud-one
         state: present
-        restart: yes
+        restarted: yes
       register: compose_output
 
     - debug:
