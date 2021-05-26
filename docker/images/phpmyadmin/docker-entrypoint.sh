@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# Wait for database
-dockerize -wait tcp://"$DB_HOST":3306 -timeout 30s
-
 # Test FPM configuration and exit if invalid
 #if ! php-fpm7 --test; then
 #	echo "FPM configuration file is invalid, exiting."
