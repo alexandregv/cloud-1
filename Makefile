@@ -73,59 +73,97 @@ downv:
 run: upd logsf
 
 
-# database
-database.build:
-	${DC} build database
+# mariadb
+mariadb.build:
+	${DC} build mariadb
 
-database.logs:
-	${DC} logs database
+mariadb.logs:
+	${DC} logs mariadb
 
-database.logsf:
-	${DC} logs -f database
+mariadb.logsf:
+	${DC} logs -f mariadb
 
-database.up:
-	${DC} up database
+mariadb.up:
+	${DC} up mariadb
 
-database.upd:
-	${DC} up -d database
+mariadb.upd:
+	${DC} up -d mariadb
 
-database.start:
-	${DC} start database
+mariadb.start:
+	${DC} start mariadb
 
-database.stop:
-	${DC} stop database
+mariadb.stop:
+	${DC} stop mariadb
 
-database.kill:
-	${DC} kill database
+mariadb.kill:
+	${DC} kill mariadb
 
-database.rm:
-	${DC} rm -f database
+mariadb.rm:
+	${DC} rm -f mariadb
 
-database.rmv:
-	${DC} rm -f -v database
-	docker volume rm ${COMPOSE_PROJECT_NAME}_database
+mariadb.rmv:
+	${DC} rm -f -v mariadb
+	docker volume rm "$${COMPOSE_PROJECT_NAME}_mariadb" || true
 
-database.run: database.upd database.logsf
+mariadb.run: mariadb.upd mariadb.logsf
 
-database.down: database.stop database.rm
+mariadb.down: mariadb.stop mariadb.rm
 
-database.downv: database.stop database.rmv
+mariadb.downv: mariadb.stop mariadb.rmv
 
-database.shell:
-	${DC} exec database bash
+mariadb.shell:
+	${DC} exec mariadb sh
 
-database.shell.root:
-	${DC} exec --user 0 database bash
+mariadb.shell.root:
+	${DC} exec --user 0 mariadb sh
 
-database.client:
-	${DC} exec database mariadb -u$${DB_USER} -p$${DB_PASS}
+mariadb.client:
+	${DC} exec mariadb mariadb --socket=/var/lib/mysql/mysql.sock
 
-database.client.root:
-	if [ -n "$${DB_ROOT_PASS}" ] && [ -z "$${DB_RANDOM_ROOT_PASS}" ]; then \
-		${DC} exec database mariadb -uroot -p$${DB_ROOT_PASS}; \
-	else \
-		${DC} exec database mariadb -uroot -p; \
-	fi
+
+# nginx
+nginx.build:
+	${DC} build nginx
+
+nginx.logs:
+	${DC} logs nginx
+
+nginx.logsf:
+	${DC} logs -f nginx
+
+nginx.up:
+	${DC} up nginx
+
+nginx.upd:
+	${DC} up -d nginx
+
+nginx.start:
+	${DC} start nginx
+
+nginx.stop:
+	${DC} stop nginx
+
+nginx.kill:
+	${DC} kill nginx
+
+nginx.rm:
+	${DC} rm -f nginx
+
+nginx.rmv:
+	${DC} rm -f -v nginx
+
+nginx.run: nginx.upd nginx.logsf
+
+nginx.down: nginx.stop nginx.rm
+
+nginx.downv: nginx.stop nginx.rmv
+
+nginx.shell:
+	${DC} exec nginx sh
+
+nginx.shell.root:
+	${DC} exec --user 0 nginx sh
+
 
 # wordpress
 wordpress.build:
@@ -166,99 +204,61 @@ wordpress.down: wordpress.stop wordpress.rm
 wordpress.downv: wordpress.stop wordpress.rmv
 
 wordpress.shell:
-	${DC} exec wordpress bash
+	${DC} exec wordpress sh
 
 wordpress.shell.root:
-	${DC} exec --user 0 wordpress bash
+	${DC} exec --user 0 wordpress sh
 
-# proxy
-proxy.build:
-	${DC} build proxy
+wordpress.client:
+	@${DC} exec wordpress sh -c "echo 'wp-cli cli info' && wp-cli cli info && echo '=> Use \`wp-cli\` to control this WordPress installation' && exec sh"
 
-proxy.logs:
-	${DC} logs proxy
 
-proxy.logsf:
-	${DC} logs -f proxy
+# phpmyadmin
+phpmyadmin.build:
+	${DC} build phpmyadmin
 
-proxy.up:
-	${DC} up proxy
+phpmyadmin.logs:
+	${DC} logs phpmyadmin
 
-proxy.upd:
-	${DC} up -d proxy
+phpmyadmin.logsf:
+	${DC} logs -f phpmyadmin
 
-proxy.start:
-	${DC} start proxy
+phpmyadmin.up:
+	${DC} up phpmyadmin
 
-proxy.stop:
-	${DC} stop proxy
+phpmyadmin.upd:
+	${DC} up -d phpmyadmin
 
-proxy.kill:
-	${DC} kill proxy
+phpmyadmin.start:
+	${DC} start phpmyadmin
 
-proxy.rm:
-	${DC} rm -f proxy
+phpmyadmin.stop:
+	${DC} stop phpmyadmin
 
-proxy.rmv:
-	${DC} rm -f -v proxy
+phpmyadmin.kill:
+	${DC} kill phpmyadmin
 
-proxy.run: proxy.upd proxy.logsf
+phpmyadmin.rm:
+	${DC} rm -f phpmyadmin
 
-proxy.down: proxy.stop proxy.rm
+phpmyadmin.rmv:
+	${DC} rm -f -v phpmyadmin
+	docker volume rm "$${COMPOSE_PROJECT_NAME}_phpmyadmin" || true
 
-proxy.downv: proxy.stop proxy.rmv
+phpmyadmin.run: phpmyadmin.upd phpmyadmin.logsf
 
-proxy.shell:
-	${DC} exec proxy ash
+phpmyadmin.down: phpmyadmin.stop phpmyadmin.rm
 
-proxy.shell.root:
-	${DC} exec --user 0 proxy ash
+phpmyadmin.downv: phpmyadmin.stop phpmyadmin.rmv
 
-# database-ui
-database-ui.build:
-	${DC} build database-ui
+phpmyadmin.shell:
+	${DC} exec phpmyadmin sh
 
-database-ui.logs:
-	${DC} logs database-ui
-
-database-ui.logsf:
-	${DC} logs -f database-ui
-
-database-ui.up:
-	${DC} up database-ui
-
-database-ui.upd:
-	${DC} up -d database-ui
-
-database-ui.start:
-	${DC} start database-ui
-
-database-ui.stop:
-	${DC} stop database-ui
-
-database-ui.kill:
-	${DC} kill database-ui
-
-database-ui.rm:
-	${DC} rm -f database-ui
-
-database-ui.rmv:
-	${DC} rm -f -v database-ui
-
-database-ui.run: database-ui.upd database-ui.logsf
-
-database-ui.down: database-ui.stop database-ui.rm
-
-database-ui.downv: database-ui.stop database-ui.rmv
-
-database-ui.shell:
-	${DC} exec database-ui bash
-
-database-ui.shell.root:
-	${DC} exec --user 0 database-ui bash
+phpmyadmin.shell.root:
+	${DC} exec --user 0 phpmyadmin sh
 
 
 # PHONY
 genphony:
 	echo .PHONY: $$(grep -E '^[A-Za-z\.]+:[A-Za-z\. ]*$$' Makefile | cut -d: -f1 | grep -vi phony) >> Makefile
-.PHONY: all deps test deploy clean fclean re build up upd ps logs logsf start stop down downv run database.build database.logs database.logsf database.up database.upd database.start database.stop database.kill database.rm database.rmv database.run database.down database.downv database.shell database.shell.root database.client database.client.root wordpress.build wordpress.logs wordpress.logsf wordpress.up wordpress.upd wordpress.start wordpress.stop wordpress.kill wordpress.rm wordpress.rmv wordpress.run wordpress.down wordpress.downv wordpress.shell wordpress.shell.root proxy.build proxy.logs proxy.logsf proxy.up proxy.upd proxy.start proxy.stop proxy.kill proxy.rm proxy.rmv proxy.run proxy.down proxy.downv proxy.shell proxy.shell.root
+.PHONY: all deps clean fclean re test install deploy build up upd ps logs logsf start stop down downv run mariadb.build mariadb.logs mariadb.logsf mariadb.up mariadb.upd mariadb.start mariadb.stop mariadb.kill mariadb.rm mariadb.rmv mariadb.run mariadb.down mariadb.downv mariadb.shell mariadb.shell.root mariadb.client nginx.build nginx.logs nginx.logsf nginx.up nginx.upd nginx.start nginx.stop nginx.kill nginx.rm nginx.rmv nginx.run nginx.down nginx.downv nginx.shell nginx.shell.root wordpress.build wordpress.logs wordpress.logsf wordpress.up wordpress.upd wordpress.start wordpress.stop wordpress.kill wordpress.rm wordpress.rmv wordpress.run wordpress.down wordpress.downv wordpress.shell wordpress.shell.root wordpress.client phpmyadmin.build phpmyadmin.logs phpmyadmin.logsf phpmyadmin.up phpmyadmin.upd phpmyadmin.start phpmyadmin.stop phpmyadmin.kill phpmyadmin.rm phpmyadmin.rmv phpmyadmin.run phpmyadmin.down phpmyadmin.downv phpmyadmin.shell phpmyadmin.shell.root
