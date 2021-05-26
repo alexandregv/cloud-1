@@ -2,8 +2,9 @@
   hosts: all
   gather_facts: false
   tags:
-    - install
     - docker
+    - docker-compose
+    - python
   tasks:
     - name: Install dependencies
       apt:
@@ -53,7 +54,7 @@
   hosts: all
   gather_facts: false
   tags:
-    - copy
+    - files
   tasks:
     - name: Copy all files
       remote_user: ubuntu
@@ -62,4 +63,4 @@
         dest: /home/ubuntu/cloud-one
         owner: ubuntu
         group: ubuntu
-        mode: u=rw,g=r,o=r
+        mode: u=rwx,g=rx,o=rx

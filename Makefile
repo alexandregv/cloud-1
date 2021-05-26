@@ -4,24 +4,52 @@ export
 
 
 # General rules
-all: test deploy
+all: test install start
 
-deps:
-	ansible --version
+deps:	
+	@if ! command -v ansible > /dev/null; then \
+		echo "\n/!\\ Error: Please install ansible v2.9+\n"; \
+		exit 1; \
+	fi
+	@echo "ansible --version: $$(ansible --version | head -n 1 | cut -d ' ' -f 2)"
 	ansible-galaxy collection install -r ansible/requirements.yml
 
 re: all
 
 
 # Ansible rules
+## test.yml playbook
 test:
 	ansible-playbook -i ansible/inventory.yml ansible/playbooks/test.yml
 
-install:
-	ansible-playbook -i ansible/inventory.yml ansible/playbooks/docker.yml --tags "install"
+ping:
+	ansible-playbook -i ansible/inventory.yml ansible/playbooks/test.yml --tags ping
 
-deploy:
-	@echo ok
+ip:
+	ansible-playbook -i ansible/inventory.yml ansible/playbooks/test.yml --tags ip
+
+## install.yml playbook
+install:
+	ansible-playbook -i ansible/inventory.yml ansible/playbooks/install.yml
+
+sync:
+	ansible-playbook -i ansible/inventory.yml ansible/playbooks/install.yml --tags files
+
+## project.yml playbook
+build:
+	ansible-playbook -i ansible/inventory.yml ansible/playbooks/project.yml --tags build
+
+start:
+	ansible-playbook -i ansible/inventory.yml ansible/playbooks/project.yml --tags start
+
+stop:
+	ansible-playbook -i ansible/inventory.yml ansible/playbooks/project.yml --tags stop
+
+up:
+	ansible-playbook -i ansible/inventory.yml ansible/playbooks/project.yml --tags up
+
+down:
+	ansible-playbook -i ansible/inventory.yml ansible/playbooks/project.yml --tags down
 
 
 # PHONY

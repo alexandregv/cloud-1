@@ -1,35 +1,74 @@
-- name: Copy project files
+- name: Up services
   hosts: all
   gather_facts: false
   tags:
-    - copy
+    - never
+    - up
   tasks:
-    - name: Copy all files
-      remote_user: ubuntu
-      copy:
-        src: ../../docker/
-        dest: /home/ubuntu/cloud-one
-        owner: ubuntu
-        group: ubuntu
-        mode: u=rwx,g=rx,o=rx
+    - name: up
+      community.docker.docker_compose:
+        project_src: /home/ubuntu/cloud-one/
+        project_name: cloud-one
+        state: present
+      register: compose_output
 
-#   - name: chmod 600 SSL directory
-#     remote_user: ubuntu
-#     file:
-#       path: /home/ubuntu/cloud-one/ssl/
-#       mode: u=r,g=,o=
+    - debug:
+        var: compose_output
+
+
+- name: Down services
+  hosts: all
+  gather_facts: false
+  tags:
+    - never
+    - down
+  tasks:
+    - name: down
+      community.docker.docker_compose:
+        project_src: /home/ubuntu/cloud-one/
+        project_name: cloud-one
+        state: absent
+      register: compose_output
+
+    - debug:
+        var: compose_output
 
 
 - name: Start services
   hosts: all
   gather_facts: false
   tags:
+    - never
     - start
   tasks:
-    - name: up
+    - name: start
       community.docker.docker_compose:
         project_src: /home/ubuntu/cloud-one/
         project_name: cloud-one
-      register: output
+        state: present
+        restart: yes
+      register: compose_output
 
-    - debug: var=output
+    - debug:
+        var: compose_output
+
+
+- name: Stop services
+  hosts: all
+  gather_facts: false
+  tags:
+    - never
+    - stop
+  tasks:
+    - name: stop
+      community.docker.docker_compose:
+        project_src: /home/ubuntu/cloud-one/
+        project_name: cloud-one
+        state: present
+        stopped: yes
+      register: compose_output
+
+    - debug:
+        var: compose_output
+
+
