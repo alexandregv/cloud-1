@@ -1,5 +1,8 @@
 .env
+.env.dev
+.env.prod
 *.pem
+*.crt
 *.key
 *.retry
 acme.json

@@ -5,17 +5,11 @@ x-service-base: &service-base
   restart: unless-stopped
   networks: []
   volumes: []
-  labels:
-    traefik.enable: false
   logging:
     driver: 'json-file'
     options:
       max-size: 10m
       max-file: '3'
-
-x-labels-traefik-base: &labels-traefik-base
-  traefik.enable: true
-  traefik.docker.network: "${COMPOSE_PROJECT_NAME}_proxy"
 
 x-bind-mount-base: &bind-mount-base
   driver: local
@@ -23,118 +17,89 @@ x-bind-mount-base: &bind-mount-base
     type: none
     o: bind
 
+x-env-DB: &env-DB
+  DB_HOST: ${DB_HOST:-mariadb}
+  DB_NAME: ${DB_NAME:-wordpress}
+  DB_USER: ${DB_USER:-wordpress}
+  DB_PASS: ${DB_PASS:-wordpress}
+
+x-env-WP: &env-WP
+  WP_URL: ${WP_URL:-localhost}
+  WP_TITLE: ${WP_TITLE:-wordpress}
+  WP_THEME: ${WP_THEME:-twentytwentyone}
+  WP_ADMIN_MAIL: ${WP_ADMIN_MAIL:-admin@wordpress.com}
+  WP_ADMIN_USER: ${WP_ADMIN_USER:-wordpress}
+  WP_ADMIN_PASS: ${WP_ADMIN_PASS:-} # No default value because generated on first run if blank
+
 
 services:
-  database:
+  mariadb:
     <<: *service-base
-    image: mariadb:10.5.10
+    build:
+      context: images/mariadb
+    image: mariadb
     networks:
-      - database
+      - mariadb
     volumes:
-      - database:/var/lib/mysql:rw
+      - mariadb-data:/var/lib/mysql:rw
     environment:
-      MARIADB_DATABASE: ${DB_NAME:-wordpress}
-      MARIADB_USER: ${DB_USER:-wordpress}
-      MARIADB_PASSWORD: ${DB_PASS:-wordpress}
-      MARIADB_RANDOM_ROOT_PASSWORD: ${DB_RANDOM_ROOT_PASS:-yes}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS:-}
-      MARIADB_ROOT_HOST: ${DB_ROOT_HOST:-localhost}
+      <<: *env-DB
+
+  nginx:
+    <<: *service-base
+    build:
+      context: images/nginx
+    image: nginx
+    networks:
+      - nginx
+    ports:
+      - '443:443'
+    volumes:
+      - ssl:/etc/nginx/ssl/:ro
+      - wordpress-data:/var/www/wordpress:ro
+      - ./services/nginx/conf.tmpl.d/:/etc/nginx/conf.tmpl.d/:ro
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME:-login.42.fr}
+      WP_HOST: ${WP_HOST:-wordpress}
 
   wordpress:
     <<: *service-base
-    image: wordpress:5.7.2-apache
+    build:
+      context: images/wordpress
+    image: wordpress
     depends_on:
-      - database
+      - mariadb
     networks:
-      - database
-      - proxy
+      - mariadb
+      - nginx
     volumes:
-      - wordpress:/var/www/wordpress:rw
+      - wordpress-data:/var/www/wordpress:rw
     environment:
-      WORDPRESS_DB_HOST: ${DB_HOST:-database}
-      WORDPRESS_DB_NAME: ${DB_NAME:-wordpress}
-      WORDPRESS_DB_USER: ${DB_USER:-wordpress}
-      WORDPRESS_DB_PASSWORD: ${DB_PASS:-wordpress}
-    labels:
-      <<: *labels-traefik-base
-      traefik.http.services.wordpress.loadbalancer.server.port: "80"
-      # HTTP
-      traefik.http.routers.wordpress.entrypoints: "http"
-      traefik.http.routers.wordpress.rule: "Host(`cloud-one.alexandregv.fr`)"
-      traefik.http.middlewares.redirect-https.redirectscheme.scheme: "https"
-      traefik.http.routers.wordpress.middlewares: "redirect-https"
-      # HTTPS
-      traefik.http.routers.wordpress-secure.entrypoints: "https"
-      traefik.http.routers.wordpress-secure.rule: "Host(`cloud-one.alexandregv.fr`)"
-      traefik.http.routers.wordpress-secure.tls: "true"
-      traefik.http.routers.wordpress-secure.tls.certresolver: "le"
-
-  proxy:
-    image: traefik:2.4.8
-    healthcheck:
-      test: traefik healthcheck --ping
-    ports:
-      - '80:80'
-      - '443:443'
-      - '8080:8080'
-    volumes:
-      - ./traefik/traefik.yaml:/etc/traefik/traefik.yaml:ro
-      - ./traefik/acme.json:/acme.json:rw
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    labels:
-      <<: *labels-traefik-base
-      # HTTP
-      traefik.http.routers.api.entrypoints: "http"
-      traefik.http.routers.api.rule: "Host(`traefik.cloud-one.alexandregv.fr`)"
-      traefik.http.middlewares.redirect-https.redirectscheme.scheme: "https"
-      traefik.http.routers.api.middlewares: "redirect-https"
-      # HTTPS
-      traefik.http.routers.api-secure.rule: "Host(`traefik.cloud-one.alexandregv.fr`)"
-      traefik.http.routers.api-secure.entryPoints: "https"
-      traefik.http.routers.api-secure.service: "api@internal"
-      traefik.http.routers.api-secure.tls: "true"
-      traefik.http.routers.api-secure.tls.certresolver: "le"
-      # Basic Auth
-      #traefik.http.middlewares.auth-admin.basicauth.users: "${PROXY_BASIC_AUTH}"
-      #traefik.http.routers.api-secure.middlewares: "auth-admin"
-    networks:
-      - proxy
-
-  database-ui:
-    <<: *service-base
-    image: phpmyadmin:5.1.0-apache
-    #depends_on:
-    #  - database
-    networks:
-      - database
-      - proxy
-    environment:
-      MYSQL_USER: ${DB_USER:-wordpress}
-      MYSQL_PASSWORD: ${DB_PASS:-wordpress}
-      PMA_HOST: ${DB_HOST:-database}
-      PMA_ABSOLUTE_URI: "https://db.cloud-one.alexandregv.fr/"
-    labels:
-      <<: *labels-traefik-base
-      traefik.http.services.database-ui.loadbalancer.server.port: "80"
-      # HTTP
-      traefik.http.routers.database-ui.entrypoints: "http"
-      traefik.http.routers.database-ui.rule: "Host(`db.cloud-one.alexandregv.fr`)"
-      traefik.http.middlewares.redirect-https.redirectscheme.scheme: "https"
-      traefik.http.routers.database-ui.middlewares: "redirect-https"
-      # HTTPS
-      traefik.http.routers.database-ui-secure.entrypoints: "https"
-      traefik.http.routers.database-ui-secure.rule: "Host(`db.cloud-one.alexandregv.fr`)"
-      traefik.http.routers.database-ui-secure.tls: "true"
-      traefik.http.routers.database-ui-secure.tls.certresolver: "le"
+      <<: *env-DB
+      <<: *env-WP
 
 
 networks:
-  proxy:
+  nginx:
 
-  database:
+  mariadb:
 
 
 volumes:
-  database:
+  mariadb-data:
+    <<: *bind-mount-base
+    driver_opts:
+      <<: *driver_opts
+      device: "/home/$USER/data/mariadb"
 
-  wordpress:
+  wordpress-data:
+    <<: *bind-mount-base
+    driver_opts:
+      <<: *driver_opts
+      device: "/home/$USER/data/wordpress"
+
+  ssl:
+    <<: *bind-mount-base
+    driver_opts:
+      <<: *driver_opts
+      device: "/home/$USER/data/ssl"

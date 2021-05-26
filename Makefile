@@ -15,9 +15,20 @@ deps:
 	ansible --version
 	ansible-galaxy collection install -r ansible/requirements.yml
 
+data:
+	mkdir -p "/home/$$USER/data/"
+
+ssl: data
+	if [ ! -f "/home/$$USER/data/ssl/certificate.crt" ] || [ ! -f "/home/$$USER/data/ssl/private.key" ]; then \
+		rm -f "/home/$$USER/data/ssl/cert.crt" "/home/$$USER/data/ssl/private.key"; \
+		mkdir -p "/home/$$USER/data/ssl/"; \
+		openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout "/home/$$USER/data/ssl/private.key" -out "/home/$$USER/data/ssl/certificate.crt" -subj "/CN=$$DOMAIN_NAME" -addext "subjectAltName=DNS:$$DOMAIN_NAME,DNS:$$DOMAIN_NAME"; \
+	fi
+
 clean: down
 
 fclean: downv
+	sudo rm -rf /home/$$USER/data/mariadb /home/$$USER/data/wordpress /home/$$USER/data/ssl
 	if [ -n "$$(${DC} images -q)" ]; then \
 		docker image rm $$(${DC} images -q); \
 	fi
