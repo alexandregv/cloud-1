@@ -17,7 +17,7 @@ clean: down
 fclean: downv
 	@echo "Deleting $${WP_VOLUME_PATH}..."
 	sudo rm -rf "$${WP_VOLUME_PATH}"
-	docker image rm mariadb wordpress nginx phpmyadmin
+	docker image rm -f mariadb wordpress nginx phpmyadmin
 
 re: fclean all
 
@@ -86,7 +86,7 @@ mariadb.rm:
 
 mariadb.rmv:
 	${DC} rm -f -v mariadb
-	docker volume rm "$${COMPOSE_PROJECT_NAME}_mariadb" || true
+	docker volume rm -f "$${COMPOSE_PROJECT_NAME}_mariadb"
 
 mariadb.run: mariadb.upd mariadb.logsf
 
@@ -178,7 +178,7 @@ wordpress.rm:
 
 wordpress.rmv:
 	${DC} rm -f -v wordpress
-	docker volume rm "$${COMPOSE_PROJECT_NAME}_wordpress" || true
+	docker volume rm -f "$${COMPOSE_PROJECT_NAME}_wordpress"
 
 wordpress.run: wordpress.upd wordpress.logsf
 
@@ -226,7 +226,7 @@ phpmyadmin.rm:
 
 phpmyadmin.rmv:
 	${DC} rm -f -v phpmyadmin
-	docker volume rm "$${COMPOSE_PROJECT_NAME}_phpmyadmin" || true
+	docker volume rm -f "$${COMPOSE_PROJECT_NAME}_phpmyadmin"
 
 phpmyadmin.run: phpmyadmin.upd phpmyadmin.logsf
 
