@@ -8,15 +8,15 @@
       remote_user: ubuntu
       copy:
         src: ../../docker/
-        dest: /home/ubuntu/site
+        dest: /home/ubuntu/cloud-one
         owner: ubuntu
         group: ubuntu
-        mode: u=rw,g=r,o=
+        mode: u=rwx,g=rx,o=rx
 
 #   - name: chmod 600 SSL directory
 #     remote_user: ubuntu
 #     file:
-#       path: /home/ubuntu/site/ssl/
+#       path: /home/ubuntu/cloud-one/ssl/
 #       mode: u=r,g=,o=
 
 
@@ -28,7 +28,7 @@
   tasks:
     - name: up
       community.docker.docker_compose:
-        project_src: /home/ubuntu/site/
+        project_src: /home/ubuntu/cloud-one/
         project_name: cloud-one
       register: output
 

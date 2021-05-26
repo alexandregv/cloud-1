@@ -53,14 +53,13 @@
   hosts: all
   gather_facts: false
   tags:
-    - site
-    - files
+    - copy
   tasks:
     - name: Copy all files
       remote_user: ubuntu
       copy:
         src: ../../docker/
-        dest: /home/ubuntu/site
+        dest: /home/ubuntu/cloud-one
         owner: ubuntu
         group: ubuntu
-        mode: u=rw,g=r,o=
+        mode: u=rw,g=r,o=r
