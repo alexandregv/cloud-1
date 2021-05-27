@@ -11,8 +11,8 @@ deps:
 		echo "\n/!\\ Error: Please install ansible v2.9+\n"; \
 		exit 1; \
 	fi
-	@echo "ansible --version: $$(ansible --version | head -n 1 | cut -d ' ' -f 2)"
-	ansible-galaxy collection install -r ansible/requirements.yml
+	@echo "ansible --version: $$(ansible --version | head -n 1)"
+	@find ./ansible/ -type f -name requirements.yml -exec ansible-galaxy install -r {} \;
 
 re: all
 
