@@ -1,0 +1,2 @@
+---
+_dest: "{{ dest | default('/home/ubuntu/cloud-one/', true) }}"

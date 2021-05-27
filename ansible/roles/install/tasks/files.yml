@@ -1,9 +1,9 @@
 ---
-- name: Copy all files
+- name: "Copy files to {{ _dest }}"
   remote_user: ubuntu
   copy:
     src: ./
-    dest: /home/ubuntu/cloud-one
+    dest: "{{ _dest }}"
     owner: ubuntu
     group: ubuntu
     mode: u=rwx,g=rx,o=rx

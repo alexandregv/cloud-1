@@ -1,7 +1,7 @@
 ---
 - name: "Stop services ({{ _services }})"
   community.docker.docker_compose:
-    project_src: /home/ubuntu/cloud-one/
+    project_src: "{{ _project_src }}"
     project_name: cloud-one
     services: "{{ _services }}"
     state: present

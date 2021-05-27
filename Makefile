@@ -3,6 +3,13 @@ include docker/.env.local
 export
 
 
+# Variables
+ANSIBLE=ansible-playbook -i ansible/inventory.yml
+ANSIBLE_TEST=${ANSIBLE} ansible/test.yml
+ANSIBLE_INSTALL=${ANSIBLE} ansible/install.yml --extra-vars "dest='${DEST}'"
+ANSIBLE_MANAGE=${ANSIBLE} ansible/manage.yml --extra-vars "project_src='${PROJECT_SRC}'"
+
+
 # General rules
 all: test install up
 
@@ -20,42 +27,42 @@ re: all
 # Ansible rules
 ## test.yml playbook
 test:
-	ansible-playbook -i ansible/inventory.yml ansible/test.yml
+	${ANSIBLE_TEST}	
 
 ping:
-	ansible-playbook -i ansible/inventory.yml ansible/test.yml --tags ping
+	${ANSIBLE_TEST} --tags ping
 
 ip:
-	ansible-playbook -i ansible/inventory.yml ansible/test.yml --tags ip
+	${ANSIBLE_TEST} --tags ip
 
 ## install.yml playbook
 install:
-	ansible-playbook -i ansible/inventory.yml ansible/install.yml
+	${ANSIBLE} ansible/install.yml
 
 sync:
-	ansible-playbook -i ansible/inventory.yml ansible/install.yml --tags files
+	--tags files
 
 ## manage.yml playbook
 build:
-	ansible-playbook -i ansible/inventory.yml ansible/manage.yml --tags build
+	${ANSIBLE_MANAGE} --tags build
 
 start:
-	ansible-playbook -i ansible/inventory.yml ansible/manage.yml --tags start
+	${ANSIBLE_MANAGE} --tags start
 
 stop:
-	ansible-playbook -i ansible/inventory.yml ansible/manage.yml --tags stop
+	${ANSIBLE_MANAGE} --tags stop
 
 up:
-	ansible-playbook -i ansible/inventory.yml ansible/manage.yml --tags up
+	${ANSIBLE_MANAGE} --tags up
 
 down:
-	ansible-playbook -i ansible/inventory.yml ansible/manage.yml --tags down
+	${ANSIBLE_MANAGE} --tags down
 
 scale:
-	ansible-playbook -i ansible/inventory.yml ansible/manage.yml --tags scale --extra-vars "scale=${SCALE}"
+	${ANSIBLE_MANAGE} --tags scale --extra-vars "scale=${SCALE}"
 
 scale-reset:
-	ansible-playbook -i ansible/inventory.yml ansible/manage.yml --tags scale --extra-vars "scale='wordpress=1,phpmyadmin=1,mariadb=1,nginx=1'"
+	${ANSIBLE_MANAGE} --tags scale --extra-vars "scale='wordpress=1,phpmyadmin=1,mariadb=1,nginx=1'"
 
 
 # PHONY
