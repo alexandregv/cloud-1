@@ -16,5 +16,3 @@
 
 - import_tasks: scale.yml
   tags: [never, scale]
-  vars:
-    _scale: "{{ scale | default('wordpress=1,phpmyadmin=1,mariadb=1,nginx=1') }}"

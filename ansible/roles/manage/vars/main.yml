@@ -1,0 +1,3 @@
+---
+_services: "{{ services | default('wordpress,mariadb,phpmyadmin,nginx', true) }}"
+_scale: "{{ scale | default('wordpress=1,mariadb=1,phpmyadmin=1,nginx=1', true) }}"

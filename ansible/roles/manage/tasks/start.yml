@@ -1,8 +1,9 @@
 ---
-- name: (Re)Start services
+- name: "(Re)Start services ({{ _services }})"
   community.docker.docker_compose:
     project_src: /home/ubuntu/cloud-one/
     project_name: cloud-one
+    services: "{{ _services }}"
     state: present
     restarted: yes
   register: compose_output
