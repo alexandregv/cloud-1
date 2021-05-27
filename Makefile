@@ -4,7 +4,7 @@ export
 
 
 # General rules
-all: test install start
+all: test install up
 
 deps:	
 	@if ! command -v ansible > /dev/null; then \
