@@ -2,7 +2,7 @@
 - name: Copy all files
   remote_user: ubuntu
   copy:
-    src: ../docker/
+    src: ./
     dest: /home/ubuntu/cloud-one
     owner: ubuntu
     group: ubuntu
