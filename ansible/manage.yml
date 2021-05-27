@@ -1,0 +1,6 @@
+---
+- name: Manage services
+  hosts: all
+  gather_facts: false
+  roles:
+    - manage

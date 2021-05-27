@@ -1,0 +1,20 @@
+---
+- import_tasks: build.yml
+  tags: [never, build]
+
+- import_tasks: up.yml
+  tags: [never, up]
+
+- import_tasks: down.yml
+  tags: [never, down]
+
+- import_tasks: start.yml
+  tags: [never, start]
+
+- import_tasks: stop.yml
+  tags: [never, stop]
+
+- import_tasks: scale.yml
+  tags: [never, scale]
+  vars:
+    _scale: "{{ scale | default('wordpress=1,phpmyadmin=1,mariadb=1,nginx=1') }}"

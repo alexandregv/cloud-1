@@ -1,0 +1,10 @@
+---
+- name: Down services
+  community.docker.docker_compose:
+    project_src: /home/ubuntu/cloud-one/
+    project_name: cloud-one
+    state: absent
+  register: compose_output
+
+- debug:
+    var: compose_output

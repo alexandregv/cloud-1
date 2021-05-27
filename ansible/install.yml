@@ -1,0 +1,6 @@
+---
+- name: Install docker(-compose) and project files
+  hosts: all
+  gather_facts: false
+  roles:
+    - install

@@ -1,3 +1,4 @@
+---
 - name: Test connection
   hosts: all
   gather_facts: false
@@ -6,6 +7,7 @@
       tags:
         - ping
       ping:
+
     - name: Get public IP
       tags:
         - ip
@@ -13,7 +15,9 @@
         url: http://ipinfo.io/ip
         return_content: yes
       register: ip_response
+
     - name: Show public IP
       tags:
         - ip
-      debug: var=ip_response.content
+      debug:
+        var: ip_response.content

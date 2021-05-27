@@ -1,0 +1,11 @@
+---
+- name: "Scale services ({{ _scale }})"
+  community.docker.docker_compose:
+    project_src: /home/ubuntu/cloud-one/
+    project_name: cloud-one
+    state: present
+    scale: "{{ _scale }}"
+  register: compose_output
+
+- debug:
+    var: compose_output

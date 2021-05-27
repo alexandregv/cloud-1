@@ -20,45 +20,45 @@ re: all
 # Ansible rules
 ## test.yml playbook
 test:
-	ansible-playbook -i ansible/inventory.yml ansible/playbooks/test.yml
+	ansible-playbook -i ansible/inventory.yml ansible/test.yml
 
 ping:
-	ansible-playbook -i ansible/inventory.yml ansible/playbooks/test.yml --tags ping
+	ansible-playbook -i ansible/inventory.yml ansible/test.yml --tags ping
 
 ip:
-	ansible-playbook -i ansible/inventory.yml ansible/playbooks/test.yml --tags ip
+	ansible-playbook -i ansible/inventory.yml ansible/test.yml --tags ip
 
 ## install.yml playbook
 install:
-	ansible-playbook -i ansible/inventory.yml ansible/playbooks/install.yml
+	ansible-playbook -i ansible/inventory.yml ansible/install.yml
 
 sync:
-	ansible-playbook -i ansible/inventory.yml ansible/playbooks/install.yml --tags files
+	ansible-playbook -i ansible/inventory.yml ansible/install.yml --tags files
 
-## project.yml playbook
+## manage.yml playbook
 build:
-	ansible-playbook -i ansible/inventory.yml ansible/playbooks/project.yml --tags build
+	ansible-playbook -i ansible/inventory.yml ansible/manage.yml --tags build
 
 start:
-	ansible-playbook -i ansible/inventory.yml ansible/playbooks/project.yml --tags start
+	ansible-playbook -i ansible/inventory.yml ansible/manage.yml --tags start
 
 stop:
-	ansible-playbook -i ansible/inventory.yml ansible/playbooks/project.yml --tags stop
+	ansible-playbook -i ansible/inventory.yml ansible/manage.yml --tags stop
 
 up:
-	ansible-playbook -i ansible/inventory.yml ansible/playbooks/project.yml --tags up
+	ansible-playbook -i ansible/inventory.yml ansible/manage.yml --tags up
 
 down:
-	ansible-playbook -i ansible/inventory.yml ansible/playbooks/project.yml --tags down
+	ansible-playbook -i ansible/inventory.yml ansible/manage.yml --tags down
 
 scale:
-	ansible-playbook -i ansible/inventory.yml ansible/playbooks/project.yml --tags scale --extra-vars "scale=${SCALE}"
+	ansible-playbook -i ansible/inventory.yml ansible/manage.yml --tags scale --extra-vars "scale=${SCALE}"
 
 scale-reset:
-	ansible-playbook -i ansible/inventory.yml ansible/playbooks/project.yml --tags scale --extra-vars "scale='wordpress=1,phpmyadmin=1,mariadb=1,nginx=1'"
+	ansible-playbook -i ansible/inventory.yml ansible/manage.yml --tags scale --extra-vars "scale='wordpress=1,phpmyadmin=1,mariadb=1,nginx=1'"
 
 
 # PHONY
 genphony:
 	echo .PHONY: $$(grep -E '^[A-Za-z\.]+:[A-Za-z\. ]*$$' Makefile | cut -d: -f1 | grep -vi phony) >> Makefile
-.PHONY: all deps re test install deploy
+.PHONY: all re test ping ip install sync build start stop up down scale
