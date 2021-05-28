@@ -37,7 +37,7 @@ ip:
 
 ## install.yml playbook
 install:
-	${ANSIBLE} ansible/install.yml
+	${ANSIBLE_INSTALL}
 
 sync:
 	--tags files
